@@ -10,7 +10,7 @@ const checkToken = async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = get(req, "headers.x-refresh", "");
 
     if (!accessToken) {
-        return res.status(401).send("Not authorized");
+        return res.status(403).send("Not authorized");
     }
 
     let { decoded, expired } = verifyJwt(accessToken);
@@ -22,7 +22,7 @@ const checkToken = async (req: Request, res: Response, next: NextFunction) => {
             const newAccessToken = await reIssueAccessToken(refreshToken);
 
             if (!newAccessToken) {
-                return res.status(401).send("Not authorized");
+                return res.status(403).send("Not authorized");
             }
 
             console.log("Token actualizado");
@@ -32,7 +32,7 @@ const checkToken = async (req: Request, res: Response, next: NextFunction) => {
             // Decodificamos el nuevo token
             decoded = verifyJwt(newAccessToken).decoded;
         } else {
-            return res.status(401).send("Not authorized");
+            return res.status(403).send("Not authorized");
         }
     }
 
